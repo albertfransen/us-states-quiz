@@ -34,12 +34,35 @@
             max-width: 500px;
             width: 100%;
             text-align: center;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         h1 {
             color: #333;
             margin-bottom: 25px;
             font-size: 1.8em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 .emoji {
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
         }
 
         @media (max-width: 480px) {
@@ -78,11 +101,20 @@
         input[type="number"], select {
             width: 100%;
             padding: 14px;
-            border: 2px solid #ddd;
+            border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 16px;
             -webkit-appearance: none;
             appearance: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: #fafafa;
+        }
+
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
         }
 
         select {
@@ -101,14 +133,37 @@
             border-radius: 12px;
             cursor: pointer;
             margin-top: 20px;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
             width: 100%;
             max-width: 300px;
             touch-action: manipulation;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        button:active::before {
+            width: 300px;
+            height: 300px;
         }
 
         button:active {
             transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
         }
 
         @media (max-width: 480px) {
@@ -138,15 +193,28 @@
             border-radius: 20px;
             cursor: pointer;
             min-height: 300px;
-            display: flex;
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
         }
 
+        .transition-screen.active {
+            display: flex !important;
+        }
+
         .transition-screen h2 {
             font-size: 1.5em;
             margin-bottom: 20px;
+        }
+
+        .transition-screen p:last-child {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
         }
 
         .reveal-screen {
@@ -164,6 +232,11 @@
             justify-content: center;
             word-break: break-word;
             line-height: 1.2;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeIn 0.5s ease-in;
         }
 
         .imposter-display {
@@ -171,6 +244,19 @@
             font-weight: bold;
             color: #e74c3c;
             margin: 30px 0;
+            animation: shake 0.5s ease-in-out, fadeIn 0.5s ease-in;
+            text-shadow: 2px 2px 8px rgba(231, 76, 60, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
         .player-counter {
@@ -220,7 +306,7 @@
     <div class="container">
         <!-- Setup Screen -->
         <div class="setup-screen active">
-            <h1>🎭 Imposter Game</h1>
+            <h1><span class="emoji">🎭</span> Imposter Game</h1>
             <div class="input-group">
                 <label for="categorySelect">Category:</label>
                 <select id="categorySelect">
