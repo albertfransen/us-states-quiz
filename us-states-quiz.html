@@ -100,6 +100,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <option value="easy">Easy</option><option value="medium" selected>Medium</option>
     <option value="hard">Hard</option>
   </select></div>
+  <div class="sel-group"><label># Questions</label><select id="questionCount">
+    <option value="0">All</option><option value="10">10</option>
+    <option value="15">15</option><option value="25">25</option>
+  </select></div>
   <button class="btn btn-start" id="startBtn" onclick="startGame()">Start Quiz</button>
   <button class="btn btn-learn" onclick="enterLearnMode()">📚 Learn</button>
 </div>
@@ -114,6 +118,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <div class="game-actions hidden" id="gameActions">
   <button class="btn btn-hint btn-small" id="hintBtn" onclick="giveHint()">💡 Hint</button>
   <button class="btn btn-skip btn-small" id="skipBtn" onclick="skipState()">Skip →</button>
+  <button class="btn btn-small" id="endBtn" onclick="endGame()" style="background:#e17055;color:white">End Quiz</button>
 </div>
 <div class="bottom-bar" id="statsBar">
   <span>Games: <strong id="statGames">0</strong></span>
@@ -383,10 +388,13 @@ function startGame() {
   if (mode === 'missed' && gameState.missed.length > 0) list = [...gameState.missed];
   else if (mode === 'weak') { list = getWeakestStates(15); if (list.length < 5) list = regions.all; }
   else list = regions[mode] || regions.all;
+  let shuffled = shuffle(list);
+  const qCount = parseInt(document.getElementById('questionCount').value);
+  if (qCount > 0 && qCount < shuffled.length) shuffled = shuffled.slice(0, qCount);
   gameState = {
-    active: true, queue: shuffle(list), currentTarget: null,
+    active: true, queue: shuffled, currentTarget: null,
     correct: 0, wrong: 0, streak: 0, bestStreak: 0,
-    completed: [], missed: [], totalInRound: list.length, hintsUsed: 0,
+    completed: [], missed: [], totalInRound: shuffled.length, hintsUsed: 0,
     hintLevel: 0, attemptsLeft: maxAttempts[difficulty]
   };
   updateScore();
