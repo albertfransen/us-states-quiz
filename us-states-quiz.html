@@ -5,219 +5,126 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>US States Geography Quiz</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #1a1a2e;
-    color: #eee;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  header {
-    text-align: center;
-    padding: 20px;
-    width: 100%;
-    background: #16213e;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-  }
-  header h1 { font-size: 1.8rem; color: #e94560; margin-bottom: 5px; }
-  header p { color: #aaa; font-size: 0.9rem; }
-  .game-area {
-    display: flex; flex-direction: column; align-items: center;
-    width: 100%; max-width: 1100px; padding: 20px; gap: 15px;
-  }
-  .controls {
-    display: flex; gap: 15px; align-items: center;
-    flex-wrap: wrap; justify-content: center;
-  }
-  .prompt-box {
-    background: #16213e; border: 2px solid #e94560;
-    border-radius: 12px; padding: 15px 30px;
-    text-align: center; min-width: 300px;
-  }
-  .prompt-box .label { font-size: 0.85rem; color: #aaa; margin-bottom: 5px; }
-  .prompt-box .state-name {
-    font-size: 1.8rem; font-weight: bold; color: #e94560; min-height: 2.2rem;
-  }
-  .score-box {
-    background: #16213e; border-radius: 12px;
-    padding: 15px 25px; display: flex; gap: 20px; align-items: center;
-  }
-  .score-item { text-align: center; }
-  .score-item .num { font-size: 1.5rem; font-weight: bold; }
-  .score-item .lbl { font-size: 0.75rem; color: #aaa; }
-  .correct .num { color: #4ecca3; }
-  .wrong .num { color: #e94560; }
-  .streak .num { color: #f9d923; }
-  .btn {
-    padding: 10px 24px; border: none; border-radius: 8px;
-    font-size: 1rem; cursor: pointer; transition: all 0.2s; font-weight: 600;
-  }
-  .btn:hover { transform: translateY(-1px); }
-  .btn-primary { background: #e94560; color: white; }
-  .btn-primary:hover { background: #c73652; }
-  .btn-secondary { background: #0f3460; color: white; }
-  .btn-secondary:hover { background: #1a4a8a; }
-  .btn-hint { background: #f9d923; color: #1a1a2e; }
-  .map-container {
-    width: 100%; max-width: 1050px; background: #16213e;
-    border-radius: 12px; padding: 15px; position: relative;
-  }
-  #us-map { width: 100%; height: auto; touch-action: manipulation; }
-  #us-map path {
-    fill: #0f3460; stroke: #1a1a2e; stroke-width: 1.2;
-    cursor: pointer; transition: fill 0.2s;
-  }
-  #us-map path:hover { fill: #1a5276; }
-  #us-map path.correct-answer { fill: #4ecca3 !important; }
-  #us-map path.wrong-answer { fill: #e94560 !important; }
-  #us-map path.hint-highlight { fill: #f9d923 !important; }
-  #us-map path.completed { fill: #2d6a4f; opacity: 0.7; }
-  .show-me-label {
-    position: absolute; background: #4ecca3; color: #1a1a2e; padding: 4px 10px;
-    border-radius: 6px; font-size: 0.85rem; font-weight: bold; pointer-events: none;
-    z-index: 101; transform: translate(-50%, -100%); white-space: nowrap;
-    animation: showMePulse 0.5s ease-in-out infinite alternate;
-  }
-  @keyframes showMePulse { from { transform: translate(-50%, -100%) scale(1); } to { transform: translate(-50%, -100%) scale(1.1); } }
-  .feedback {
-    font-size: 1.2rem; font-weight: bold; min-height: 1.5rem;
-    text-align: center; transition: all 0.3s;
-  }
-  .feedback.correct { color: #4ecca3; }
-  .feedback.wrong { color: #e94560; }
-  .progress-bar-container {
-    width: 100%; max-width: 1050px; background: #0f3460;
-    border-radius: 8px; height: 12px; overflow: hidden;
-  }
-  .progress-bar {
-    height: 100%; background: linear-gradient(90deg, #4ecca3, #2d6a4f);
-    border-radius: 8px; transition: width 0.5s; width: 0%;
-  }
-  .progress-label { font-size: 0.8rem; color: #aaa; text-align: center; margin-top: 4px; }
-  .mode-select { display: flex; gap: 10px; align-items: center; }
-  .mode-select label { font-size: 0.9rem; color: #aaa; }
-  .mode-select select {
-    padding: 8px 12px; border-radius: 8px; border: 1px solid #0f3460;
-    background: #16213e; color: #eee; font-size: 0.9rem;
-  }
-  .tooltip {
-    position: absolute; background: rgba(0,0,0,0.85); color: #fff;
-    padding: 5px 10px; border-radius: 6px; font-size: 0.85rem;
-    pointer-events: none; display: none; z-index: 100;
-  }
-  .completion-screen { display: none; text-align: center; padding: 40px; }
-  .completion-screen h2 { font-size: 2rem; color: #4ecca3; margin-bottom: 15px; }
-  .completion-screen .final-score { font-size: 1.3rem; color: #aaa; margin-bottom: 25px; }
-  .region-hint { font-size: 0.85rem; color: #f9d923; margin-top: 3px; }
-  .timer-bar {
-    width: 100%; height: 6px; background: #0f3460; border-radius: 3px; margin-top: 5px; overflow: hidden;
-  }
-  .timer-fill {
-    height: 100%; background: #e94560; border-radius: 3px; transition: width 0.1s linear; width: 100%;
-  }
-  .stats-bar {
-    display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;
-    padding: 10px; background: #0f3460; border-radius: 8px; font-size: 0.8rem; color: #aaa;
-  }
-  .stats-bar span { white-space: nowrap; }
-  .stats-bar strong { color: #4ecca3; }
-
-  /* Mobile responsive */
-  @media (max-width: 768px) {
-    header { padding: 12px; }
-    header h1 { font-size: 1.3rem; }
-    header p { font-size: 0.75rem; }
-    .game-area { padding: 10px; gap: 8px; }
-    .controls { gap: 8px; }
-    .prompt-box { padding: 10px 15px; min-width: auto; width: 100%; }
-    .prompt-box .state-name { font-size: 1.4rem; }
-    .score-box { padding: 8px 12px; gap: 12px; }
-    .score-item .num { font-size: 1.2rem; }
-    .mode-select { width: 48%; }
-    .mode-select select { width: 100%; padding: 10px; font-size: 1rem; }
-    .btn { padding: 12px 20px; font-size: 1rem; min-height: 44px; }
-    .map-container { padding: 8px; border-radius: 8px; overflow: hidden; }
-    #us-map path { stroke-width: 0.8; }
-    .progress-bar-container { height: 8px; }
-    .stats-bar { font-size: 0.75rem; gap: 10px; padding: 8px; }
-    .completion-screen { padding: 20px; }
-    .completion-screen h2 { font-size: 1.5rem; }
-    .completion-screen .final-score { font-size: 1rem; }
-    .feedback { font-size: 1rem; }
-  }
-  @media (max-width: 480px) {
-    header h1 { font-size: 1.1rem; }
-    .prompt-box .state-name { font-size: 1.2rem; }
-    .score-box { gap: 8px; padding: 6px 10px; }
-    .score-item .num { font-size: 1rem; }
-    .mode-select { width: 100%; }
-    .btn { width: 100%; }
-  }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0b0e17;color:#eee;min-height:100vh;overflow-x:hidden}
+.top-bar{position:sticky;top:0;z-index:50;background:rgba(11,14,23,0.95);backdrop-filter:blur(10px);border-bottom:1px solid #1a2035;padding:8px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.prompt-area{flex:1;min-width:0}
+.prompt-label{font-size:0.7rem;color:#556;text-transform:uppercase;letter-spacing:1px}
+.state-name{font-size:1.4rem;font-weight:800;color:#e94560;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.region-hint{font-size:0.7rem;color:#f9d923}
+.timer-bar{width:100%;height:4px;background:#1a2035;border-radius:2px;margin-top:2px;overflow:hidden}
+.timer-fill{height:100%;background:#e94560;border-radius:2px;transition:width 0.1s linear;width:100%}
+.score-pills{display:flex;gap:6px;flex-shrink:0}
+.pill{padding:4px 10px;border-radius:20px;font-size:0.8rem;font-weight:700;background:#111827}
+.pill-correct{color:#4ecca3;border:1px solid #4ecca322}
+.pill-wrong{color:#e94560;border:1px solid #e9456022}
+.pill-streak{color:#f9d923;border:1px solid #f9d92322}
+.settings-panel{background:#111827;padding:10px 16px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;border-bottom:1px solid #1a2035}
+.settings-panel.hidden{display:none}
+.sel-group{display:flex;align-items:center;gap:6px}
+.sel-group label{font-size:0.75rem;color:#556}
+.sel-group select{padding:6px 10px;border-radius:6px;border:1px solid #1a2035;background:#0b0e17;color:#eee;font-size:0.85rem}
+.btn{padding:8px 18px;border:none;border-radius:8px;font-size:0.9rem;cursor:pointer;transition:all 0.15s;font-weight:700;min-height:40px;touch-action:manipulation}
+.btn-start{background:#e94560;color:white}
+.btn-start:hover{background:#c73652}
+.btn-learn{background:#6c5ce7;color:white}
+.btn-hint{background:#f9d923;color:#0b0e17}
+.btn-skip{background:#1a2035;color:#aaa;border:1px solid #2a3045}
+.btn-small{padding:6px 14px;font-size:0.8rem;min-height:34px}
+.map-wrap{width:100%;max-width:1100px;margin:0 auto;padding:6px}
+.map-container{position:relative;background:#111827;border-radius:12px;overflow:hidden;border:1px solid #1a2035}
+#us-map{width:100%;height:auto;display:block;touch-action:manipulation}
+#us-map path{fill:#1a2844;stroke:#0b0e17;stroke-width:1;cursor:pointer;transition:fill 0.15s}
+#us-map path:hover{fill:#243b6a}
+#us-map path.correct-answer{fill:#4ecca3 !important}
+#us-map path.wrong-answer{fill:#e94560 !important}
+#us-map path.hint-highlight{fill:#f9d923 !important}
+#us-map path.completed{fill:#1a4a3a;opacity:0.7}
+#us-map path.learn-hover{fill:#6c5ce7 !important}
+.map-actions{position:absolute;bottom:12px;right:12px;display:flex;gap:8px;z-index:10}
+.toast{position:absolute;top:12px;left:50%;transform:translateX(-50%);padding:8px 20px;border-radius:20px;font-size:0.9rem;font-weight:700;z-index:10;pointer-events:none;opacity:0;transition:opacity 0.3s;white-space:nowrap}
+.toast.show{opacity:1}
+.toast-correct{background:#4ecca322;color:#4ecca3;border:1px solid #4ecca344}
+.toast-wrong{background:#e9456022;color:#e94560;border:1px solid #e9456044}
+.map-progress{position:absolute;bottom:0;left:0;right:0;height:4px;background:#1a2035;z-index:5}
+.map-progress-fill{height:100%;background:linear-gradient(90deg,#4ecca3,#6c5ce7);transition:width 0.4s;width:0%}
+.show-me-label{position:absolute;background:#4ecca3;color:#0b0e17;padding:3px 8px;border-radius:4px;font-size:0.75rem;font-weight:800;pointer-events:none;z-index:101;transform:translate(-50%,-100%);white-space:nowrap;animation:pulse 0.5s ease-in-out infinite alternate}
+@keyframes pulse{to{transform:translate(-50%,-100%) scale(1.1)}}
+.tooltip{position:absolute;background:rgba(0,0,0,0.9);color:#fff;padding:4px 10px;border-radius:4px;font-size:0.8rem;pointer-events:none;display:none;z-index:100}
+.bottom-bar{max-width:1100px;margin:0 auto;padding:8px 16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;font-size:0.75rem;color:#445}
+.bottom-bar strong{color:#4ecca3}
+.weak-states{color:#e94560;font-size:0.7rem;text-align:center;padding:0 16px 8px}
+.completion-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(11,14,23,0.92);backdrop-filter:blur(8px);justify-content:center;align-items:center}
+.completion-overlay.show{display:flex}
+.completion-card{background:#111827;border:1px solid #1a2035;border-radius:16px;padding:32px;text-align:center;max-width:400px;width:90%}
+.completion-card h2{font-size:1.8rem;color:#4ecca3;margin-bottom:12px}
+.completion-card .score-text{font-size:1rem;color:#889;margin-bottom:20px;line-height:1.7}
+.completion-card .btn{width:100%;margin-top:8px}
+#confetti{position:fixed;inset:0;z-index:300;pointer-events:none}
+.streak-glow .map-container{box-shadow:0 0 30px #f9d92344,0 0 60px #f9d92322;transition:box-shadow 0.3s}
+.learn-banner{background:#6c5ce7;color:white;text-align:center;padding:6px;font-size:0.8rem;font-weight:700;display:none}
+.learn-banner.show{display:block}
+@media(max-width:768px){.top-bar{padding:6px 10px;gap:8px}.state-name{font-size:1.2rem}.pill{padding:3px 8px;font-size:0.7rem}.settings-panel{padding:8px 10px;gap:8px}.sel-group select{padding:8px;font-size:0.9rem}.btn{min-height:44px}.map-wrap{padding:4px}}
+@media(max-width:480px){.score-pills{gap:4px}.pill{padding:2px 6px;font-size:0.65rem}.state-name{font-size:1.1rem}.sel-group{width:48%}.sel-group select{width:100%}.btn{width:100%}}
 </style>
 </head>
 <body>
-<header>
-  <h1>US States Geography Quiz</h1>
-  <p>Click the correct state on the map!</p>
-</header>
-<div class="game-area">
-  <div class="controls">
-    <div class="prompt-box">
-      <div class="label">Find this state:</div>
-      <div class="state-name" id="targetState">Press Start to begin!</div>
-      <div class="region-hint" id="regionHint"></div>
-      <div class="timer-bar" id="timerBar" style="display:none;"><div class="timer-fill" id="timerFill"></div></div>
-    </div>
-    <div class="score-box">
-      <div class="score-item correct"><div class="num" id="correctCount">0</div><div class="lbl">Correct</div></div>
-      <div class="score-item wrong"><div class="num" id="wrongCount">0</div><div class="lbl">Wrong</div></div>
-      <div class="score-item streak"><div class="num" id="streakCount">0</div><div class="lbl">Streak</div></div>
-    </div>
-    <div class="mode-select">
-      <label>Mode:</label>
-      <select id="gameMode">
-        <option value="all">All 50 States</option>
-        <option value="west">Western States</option>
-        <option value="midwest">Midwest</option>
-        <option value="south">Southern States</option>
-        <option value="northeast">Northeast</option>
-        <option value="missed">Missed States Only</option>
-      </select>
-    </div>
-    <div class="mode-select">
-      <label>Difficulty:</label>
-      <select id="difficultySelect">
-        <option value="easy">Easy</option>
-        <option value="medium" selected>Medium</option>
-        <option value="hard">Hard</option>
-      </select>
-    </div>
-    <button class="btn btn-primary" id="startBtn" onclick="startGame()">Start Quiz</button>
-    <button class="btn btn-hint" id="hintBtn" onclick="giveHint()" style="display:none;">Hint</button>
-    <button class="btn btn-secondary" id="skipBtn" onclick="skipState()" style="display:none;">Skip</button>
+<div class="top-bar">
+  <div class="prompt-area">
+    <div class="prompt-label">Find this state</div>
+    <div class="state-name" id="targetState">Choose a mode &amp; press Start</div>
+    <div class="region-hint" id="regionHint"></div>
+    <div class="timer-bar" id="timerBar" style="display:none"><div class="timer-fill" id="timerFill"></div></div>
   </div>
-  <div class="feedback" id="feedback"></div>
-  <div class="progress-bar-container"><div class="progress-bar" id="progressBar"></div></div>
-  <div class="progress-label" id="progressLabel">0 / 50 states completed</div>
-  <div class="stats-bar" id="statsBar">
-    <span>Games: <strong id="statGames">0</strong></span>
-    <span>Best: <strong id="statBest">0%</strong></span>
-    <span>Avg: <strong id="statAvg">0%</strong></span>
-    <span>Best Streak: <strong id="statStreak">0</strong></span>
-  </div>
-  <div class="map-container">
-    <div class="tooltip" id="tooltip"></div>
-    <svg id="us-map" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg"></svg>
-  </div>
-  <div class="completion-screen" id="completionScreen">
-    <h2>Quiz Complete!</h2>
-    <div class="final-score" id="finalScore"></div>
-    <button class="btn btn-primary" onclick="startGame()">Play Again</button>
+  <div class="score-pills">
+    <div class="pill pill-correct"><span id="correctCount">0</span> ✓</div>
+    <div class="pill pill-wrong"><span id="wrongCount">0</span> ✗</div>
+    <div class="pill pill-streak">🔥<span id="streakCount">0</span></div>
   </div>
 </div>
+<div class="learn-banner" id="learnBanner">📚 Learn Mode — tap any state to see its name <button class="btn btn-small" onclick="exitLearnMode()" style="background:#fff;color:#6c5ce7;margin-left:10px">Exit</button></div>
+<div class="settings-panel" id="settingsPanel">
+  <div class="sel-group"><label>Mode</label><select id="gameMode">
+    <option value="all">All 50 States</option><option value="west">West</option>
+    <option value="midwest">Midwest</option><option value="south">South</option>
+    <option value="northeast">Northeast</option><option value="missed">Missed Only</option>
+    <option value="weak">Weakest States</option>
+  </select></div>
+  <div class="sel-group"><label>Difficulty</label><select id="difficultySelect">
+    <option value="easy">Easy</option><option value="medium" selected>Medium</option>
+    <option value="hard">Hard</option>
+  </select></div>
+  <button class="btn btn-start" id="startBtn" onclick="startGame()">Start Quiz</button>
+  <button class="btn btn-learn" onclick="enterLearnMode()">📚 Learn</button>
+</div>
+<div class="map-wrap" id="mapWrap">
+  <div class="map-container">
+    <div class="tooltip" id="tooltip"></div>
+    <div class="toast" id="toast"></div>
+    <svg id="us-map" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="map-actions">
+      <button class="btn btn-hint btn-small" id="hintBtn" onclick="giveHint()" style="display:none">💡 Hint</button>
+      <button class="btn btn-skip btn-small" id="skipBtn" onclick="skipState()" style="display:none">Skip →</button>
+    </div>
+    <div class="map-progress"><div class="map-progress-fill" id="progressBar"></div></div>
+  </div>
+</div>
+<div class="bottom-bar" id="statsBar">
+  <span>Games: <strong id="statGames">0</strong></span>
+  <span>Best: <strong id="statBest">0%</strong></span>
+  <span>Avg: <strong id="statAvg">0%</strong></span>
+  <span>🔥 Best Streak: <strong id="statStreak">0</strong></span>
+</div>
+<div class="weak-states" id="weakStates"></div>
+<div class="completion-overlay" id="completionScreen">
+  <div class="completion-card">
+    <h2 id="completionTitle">Quiz Complete!</h2>
+    <div class="score-text" id="finalScore"></div>
+    <button class="btn btn-start" onclick="closeCompletion();startGame()">Play Again</button>
+    <button class="btn btn-learn" onclick="closeCompletion();enterLearnMode()">📚 Review</button>
+  </div>
+</div>
+<canvas id="confetti"></canvas>
 <script>
 const statePaths = {
 HI:"M233,519.3L235,515.7L237.2,515.4L237.6,516.2L235.5,519.3L233,519.3zM243.2,515.5L249.4,518.1L251.5,517.8L253.1,513.9L252.4,510.5L248.2,510L244.2,511.8L243.2,515.5zM273.9,525.6L277.7,531.1L280.1,530.7L281.2,530.3L282.7,531.5L286.4,531.4L287.4,529.9L284.4,528.2L282.5,524.4L280.4,520.9L274.6,523.8L273.9,525.6zM294.1,534.5L295.4,532.5L300.1,533.5L300.8,533L306.9,533.6L306.6,534.9L304,536.4L299.6,536.1L294.1,534.5zM299.5,539.6L301.4,543.5L304.5,542.4L304.8,540.8L303.2,538.7L299.5,538.3L299.5,539.6zM306.4,538.5L308.7,535.6L313.4,538L317.7,539.1L322.1,541.9L322.1,543.8L318.6,545.6L313.7,546.6L311.3,545.1L306.4,538.5zM323.1,554L324.7,552.7L328.1,554.3L335.7,557.9L339.1,560L340.7,562.4L342.6,566.8L346.7,569.4L346.4,570.7L342.5,573.9L338.3,575.4L336.8,574.7L333.8,576.5L331.3,579.7L329.1,582.6L327.3,582.5L323.7,579.9L323.4,575.4L324.1,572.9L322.4,567.3L320.3,565.5L320.2,562.9L322.4,561.9L324.5,558.9L325,557.9L323.4,556.1L323.1,554z",
@@ -310,7 +217,69 @@ let gameState = {
   correct: 0, wrong: 0, streak: 0, bestStreak: 0,
   completed: [], missed: [], totalInRound: 0, hintsUsed: 0
 };
+let difficulty = 'medium';
+let timer = null;
+let learnMode = false;
+let toastTimer = null;
 
+// --- Toast feedback on map ---
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast toast-' + type + ' show';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// --- Per-state weakness tracking ---
+function loadWeakness() {
+  try { return JSON.parse(localStorage.getItem('usQuizWeak')) || {}; } catch(e) { return {}; }
+}
+function recordAnswer(abbr, correct) {
+  const w = loadWeakness();
+  if (!w[abbr]) w[abbr] = { wrong: 0, total: 0 };
+  w[abbr].total++;
+  if (!correct) w[abbr].wrong++;
+  localStorage.setItem('usQuizWeak', JSON.stringify(w));
+}
+function getWeakestStates(n) {
+  const w = loadWeakness();
+  return Object.entries(w)
+    .filter(([,v]) => v.total >= 2 && v.wrong > 0)
+    .sort((a,b) => (b[1].wrong/b[1].total) - (a[1].wrong/a[1].total))
+    .slice(0, n)
+    .map(([k]) => k);
+}
+function renderWeakStates() {
+  const weak = getWeakestStates(5);
+  const el = document.getElementById('weakStates');
+  if (weak.length > 0) {
+    el.textContent = 'Weakest: ' + weak.map(s => stateNames[s]).join(', ');
+  } else { el.textContent = ''; }
+}
+
+// --- Stats ---
+function loadStats() {
+  try { return JSON.parse(localStorage.getItem('usQuizStats')) || { games:0, bestPct:0, totalPct:0, bestStreak:0 }; }
+  catch(e) { return { games:0, bestPct:0, totalPct:0, bestStreak:0 }; }
+}
+function saveStats(pct, streak) {
+  const s = loadStats();
+  s.games++; s.totalPct += pct;
+  if (pct > s.bestPct) s.bestPct = pct;
+  if (streak > s.bestStreak) s.bestStreak = streak;
+  localStorage.setItem('usQuizStats', JSON.stringify(s));
+  renderStats();
+}
+function renderStats() {
+  const s = loadStats();
+  document.getElementById('statGames').textContent = s.games;
+  document.getElementById('statBest').textContent = s.bestPct + '%';
+  document.getElementById('statAvg').textContent = s.games ? Math.round(s.totalPct / s.games) + '%' : '0%';
+  document.getElementById('statStreak').textContent = s.bestStreak;
+}
+
+// --- Map init ---
 function initMap() {
   const svg = document.getElementById('us-map');
   for (const [abbr, pathD] of Object.entries(statePaths)) {
@@ -318,18 +287,30 @@ function initMap() {
     const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
     path.setAttribute("d", pathD);
     path.setAttribute("id", "state-" + abbr);
-    path.addEventListener('click', () => handleStateClick(abbr));
-    path.addEventListener('mouseenter', (e) => { if (!('ontouchstart' in window)) showTooltip(e, stateNames[abbr]); });
+    path.addEventListener('click', () => handleClick(abbr));
+    path.addEventListener('mouseenter', (e) => { if (!('ontouchstart' in window)) showTooltip(e, abbr); });
     path.addEventListener('mousemove', (e) => { if (!('ontouchstart' in window)) moveTooltip(e); });
     path.addEventListener('mouseleave', () => { if (!('ontouchstart' in window)) hideTooltip(); });
     svg.appendChild(path);
   }
 }
 
-function showTooltip(e, name) {
+function handleClick(abbr) {
+  if (learnMode) {
+    document.querySelectorAll('#us-map path').forEach(p => p.classList.remove('learn-hover'));
+    document.getElementById('state-' + abbr).classList.add('learn-hover');
+    document.getElementById('targetState').textContent = stateNames[abbr];
+    document.getElementById('regionHint').textContent = stateRegions[abbr].charAt(0).toUpperCase() + stateRegions[abbr].slice(1) + ' region';
+    return;
+  }
+  handleStateClick(abbr);
+}
+
+// --- Tooltip ---
+function showTooltip(e, abbr) {
   if (gameState.active) return;
   const t = document.getElementById('tooltip');
-  t.textContent = name;
+  t.textContent = stateNames[abbr];
   t.style.display = 'block';
   moveTooltip(e);
 }
@@ -350,17 +331,45 @@ function shuffle(a) {
   return a;
 }
 
-let timer = null;
+// --- Learn mode ---
+function enterLearnMode() {
+  learnMode = true;
+  gameState.active = false;
+  clearInterval(timer);
+  document.getElementById('learnBanner').classList.add('show');
+  document.getElementById('settingsPanel').classList.add('hidden');
+  document.getElementById('hintBtn').style.display = 'none';
+  document.getElementById('skipBtn').style.display = 'none';
+  document.getElementById('targetState').textContent = 'Tap any state';
+  document.getElementById('regionHint').textContent = '';
+  document.getElementById('timerBar').style.display = 'none';
+  document.querySelectorAll('#us-map path').forEach(p => {
+    p.classList.remove('correct-answer','wrong-answer','hint-highlight','completed','learn-hover');
+  });
+}
+function exitLearnMode() {
+  learnMode = false;
+  document.getElementById('learnBanner').classList.remove('show');
+  document.getElementById('settingsPanel').classList.remove('hidden');
+  document.getElementById('targetState').textContent = 'Choose a mode & press Start';
+  document.getElementById('regionHint').textContent = '';
+  document.querySelectorAll('#us-map path').forEach(p => p.classList.remove('learn-hover'));
+}
+
+// --- Game ---
 function startGame() {
+  if (learnMode) exitLearnMode();
   clearInterval(timer);
   difficulty = document.getElementById('difficultySelect').value;
   const mode = document.getElementById('gameMode').value;
   document.querySelectorAll('#us-map path').forEach(p => {
     p.classList.remove('correct-answer','wrong-answer','hint-highlight','completed');
   });
-  document.getElementById('completionScreen').style.display = 'none';
-  let list = (mode === 'missed' && gameState.missed.length > 0)
-    ? [...gameState.missed] : (regions[mode] || regions.all);
+  closeCompletion();
+  let list;
+  if (mode === 'missed' && gameState.missed.length > 0) list = [...gameState.missed];
+  else if (mode === 'weak') { list = getWeakestStates(15); if (list.length < 5) list = regions.all; }
+  else list = regions[mode] || regions.all;
   gameState = {
     active: true, queue: shuffle(list), currentTarget: null,
     correct: 0, wrong: 0, streak: 0, bestStreak: 0,
@@ -370,7 +379,9 @@ function startGame() {
   document.getElementById('hintBtn').style.display = (difficulty === 'hard') ? 'none' : 'inline-block';
   document.getElementById('skipBtn').style.display = 'inline-block';
   document.getElementById('timerBar').style.display = (difficulty === 'hard') ? 'block' : 'none';
+  document.getElementById('settingsPanel').classList.add('hidden');
   document.getElementById('startBtn').textContent = 'Restart';
+  document.getElementById('mapWrap').classList.remove('streak-glow');
   nextState();
 }
 
@@ -382,15 +393,11 @@ function nextState() {
   });
   gameState.currentTarget = gameState.queue.pop();
   document.getElementById('targetState').textContent = stateNames[gameState.currentTarget];
-  document.getElementById('feedback').textContent = '';
-  document.getElementById('feedback').className = 'feedback';
-  // Easy: show region hint
   const hint = document.getElementById('regionHint');
   if (difficulty === 'easy') {
     const r = stateRegions[gameState.currentTarget];
-    hint.textContent = 'Hint: ' + r.charAt(0).toUpperCase() + r.slice(1) + ' region';
+    hint.textContent = r.charAt(0).toUpperCase() + r.slice(1) + ' region';
   } else { hint.textContent = ''; }
-  // Hard: start countdown timer
   if (difficulty === 'hard') {
     let timeLeft = 100;
     document.getElementById('timerFill').style.width = '100%';
@@ -401,12 +408,12 @@ function nextState() {
         clearInterval(timer);
         if (!gameState.missed.includes(gameState.currentTarget)) gameState.missed.push(gameState.currentTarget);
         gameState.wrong++; gameState.streak = 0;
+        recordAnswer(gameState.currentTarget, false);
         const target = document.getElementById('state-' + gameState.currentTarget);
         target.classList.add('correct-answer');
         showMeLabel(gameState.currentTarget);
-        document.getElementById('feedback').textContent = 'Time\'s up! That was ' + stateNames[gameState.currentTarget];
-        document.getElementById('feedback').className = 'feedback wrong';
-        updateScore();
+        showToast("Time's up! " + stateNames[gameState.currentTarget], 'wrong');
+        updateScore(); updateStreakGlow();
         setTimeout(() => { target.classList.remove('correct-answer'); target.classList.add('completed'); removeShowMeLabel(); gameState.completed.push(gameState.currentTarget); nextState(); }, 2500);
       }
     }, 100);
@@ -420,24 +427,24 @@ function handleStateClick(abbr) {
   const clicked = document.getElementById('state-' + abbr);
   if (abbr === gameState.currentTarget) {
     clearInterval(timer);
-    gameState.correct++;
-    gameState.streak++;
+    gameState.correct++; gameState.streak++;
     if (gameState.streak > gameState.bestStreak) gameState.bestStreak = gameState.streak;
     gameState.completed.push(abbr);
+    recordAnswer(abbr, true);
     clicked.classList.add('correct-answer');
-    document.getElementById('feedback').textContent = 'Correct! That\'s ' + stateNames[abbr] + '!';
-    document.getElementById('feedback').className = 'feedback correct';
-    setTimeout(() => { clicked.classList.remove('correct-answer'); clicked.classList.add('completed'); nextState(); }, 800);
+    showToast('✓ ' + stateNames[abbr], 'correct');
+    updateStreakGlow();
+    setTimeout(() => { clicked.classList.remove('correct-answer'); clicked.classList.add('completed'); nextState(); }, 700);
   } else {
     clearInterval(timer);
-    gameState.wrong++;
-    gameState.streak = 0;
+    gameState.wrong++; gameState.streak = 0;
     if (!gameState.missed.includes(gameState.currentTarget)) gameState.missed.push(gameState.currentTarget);
+    recordAnswer(gameState.currentTarget, false);
     clicked.classList.add('wrong-answer');
     target.classList.add('correct-answer');
-    document.getElementById('feedback').textContent = 'That was ' + stateNames[abbr] + '. ' + stateNames[gameState.currentTarget] + ' is highlighted in green.';
-    document.getElementById('feedback').className = 'feedback wrong';
+    showToast(stateNames[abbr] + ' ✗ → ' + stateNames[gameState.currentTarget], 'wrong');
     showMeLabel(gameState.currentTarget);
+    updateStreakGlow();
     const delay = (difficulty === 'easy') ? 3500 : 2500;
     setTimeout(() => {
       clicked.classList.remove('wrong-answer');
@@ -465,11 +472,13 @@ function skipState() {
   if (!gameState.missed.includes(gameState.currentTarget)) gameState.missed.push(gameState.currentTarget);
   gameState.streak = 0;
   gameState.completed.push(gameState.currentTarget);
-  document.getElementById('feedback').textContent = 'Skipped! ' + stateNames[gameState.currentTarget] + ' was highlighted.';
-  document.getElementById('feedback').className = 'feedback wrong';
+  recordAnswer(gameState.currentTarget, false);
+  showToast('Skipped → ' + stateNames[gameState.currentTarget], 'wrong');
   const p = document.getElementById('state-' + gameState.currentTarget);
   p.classList.add('hint-highlight');
-  setTimeout(() => { p.classList.remove('hint-highlight'); p.classList.add('completed'); nextState(); }, 1200);
+  showMeLabel(gameState.currentTarget);
+  updateStreakGlow();
+  setTimeout(() => { p.classList.remove('hint-highlight'); p.classList.add('completed'); removeShowMeLabel(); nextState(); }, 1200);
   updateScore();
 }
 
@@ -478,79 +487,31 @@ function updateScore() {
   document.getElementById('wrongCount').textContent = gameState.wrong;
   document.getElementById('streakCount').textContent = gameState.streak;
 }
-
 function updateProgress() {
-  const pct = (gameState.completed.length / gameState.totalInRound) * 100;
+  const pct = gameState.totalInRound ? (gameState.completed.length / gameState.totalInRound) * 100 : 0;
   document.getElementById('progressBar').style.width = pct + '%';
-  document.getElementById('progressLabel').textContent = gameState.completed.length + ' / ' + gameState.totalInRound + ' states completed';
+}
+function updateStreakGlow() {
+  if (gameState.streak >= 5) document.getElementById('mapWrap').classList.add('streak-glow');
+  else document.getElementById('mapWrap').classList.remove('streak-glow');
 }
 
-function endGame() {
-  clearInterval(timer);
-  document.getElementById('timerBar').style.display = 'none';
-  document.getElementById('regionHint').textContent = '';
-  gameState.active = false;
-  gameState.currentTarget = null;
-  document.getElementById('targetState').textContent = 'Quiz Complete!';
-  document.getElementById('hintBtn').style.display = 'none';
-  document.getElementById('skipBtn').style.display = 'none';
-  document.getElementById('startBtn').textContent = 'Play Again';
-  const pct = Math.round((gameState.correct / gameState.totalInRound) * 100);
-  const screen = document.getElementById('completionScreen');
-  screen.style.display = 'block';
-  document.getElementById('finalScore').innerHTML =
-    'You got <strong>' + gameState.correct + '</strong> out of <strong>' + gameState.totalInRound + '</strong> correct (' + pct + '%)<br>' +
-    'Best streak: <strong>' + gameState.bestStreak + '</strong> | Hints used: <strong>' + gameState.hintsUsed + '</strong>' +
-    (gameState.missed.length > 0
-      ? '<br><br>States to review: ' + gameState.missed.map(s => stateNames[s]).join(', ')
-      : '<br><br>Perfect score!');
-  if (gameState.missed.length > 0) document.getElementById('gameMode').value = 'missed';
-  saveStats(pct, gameState.bestStreak);
-  updateProgress();
-}
-
-let difficulty = 'medium';
-
-function loadStats() {
-  try { return JSON.parse(localStorage.getItem('usQuizStats')) || { games: 0, bestPct: 0, totalPct: 0, bestStreak: 0 }; }
-  catch(e) { return { games: 0, bestPct: 0, totalPct: 0, bestStreak: 0 }; }
-}
-function saveStats(pct, streak) {
-  const s = loadStats();
-  s.games++;
-  s.totalPct += pct;
-  if (pct > s.bestPct) s.bestPct = pct;
-  if (streak > s.bestStreak) s.bestStreak = streak;
-  localStorage.setItem('usQuizStats', JSON.stringify(s));
-  renderStats();
-}
-function renderStats() {
-  const s = loadStats();
-  document.getElementById('statGames').textContent = s.games;
-  document.getElementById('statBest').textContent = s.bestPct + '%';
-  document.getElementById('statAvg').textContent = s.games ? Math.round(s.totalPct / s.games) + '%' : '0%';
-  document.getElementById('statStreak').textContent = s.bestStreak;
-}
-
+// --- Show-me label ---
 function showMeLabel(abbr) {
   removeShowMeLabel();
   const path = document.getElementById('state-' + abbr);
   const box = path.getBBox();
   const svg = document.getElementById('us-map');
   const svgRect = svg.getBoundingClientRect();
-  const viewBox = svg.viewBox.baseVal;
-  const scaleX = svgRect.width / viewBox.width;
-  const scaleY = svgRect.height / viewBox.height;
+  const vb = svg.viewBox.baseVal;
+  const sx = svgRect.width / vb.width, sy = svgRect.height / vb.height;
   const container = document.querySelector('.map-container');
-  const contRect = container.getBoundingClientRect();
+  const cr = container.getBoundingClientRect();
   const lbl = document.createElement('div');
-  lbl.className = 'show-me-label';
-  lbl.id = 'showMeLabel';
+  lbl.className = 'show-me-label'; lbl.id = 'showMeLabel';
   lbl.textContent = stateNames[abbr];
-  const cx = svgRect.left - contRect.left + (box.x + box.width / 2) * scaleX;
-  const cy = svgRect.top - contRect.top + (box.y + box.height / 2) * scaleY;
-  lbl.style.left = cx + 'px';
-  lbl.style.top = cy + 'px';
+  lbl.style.left = (svgRect.left - cr.left + (box.x + box.width/2) * sx) + 'px';
+  lbl.style.top = (svgRect.top - cr.top + (box.y + box.height/2) * sy) + 'px';
   container.appendChild(lbl);
 }
 function removeShowMeLabel() {
@@ -558,8 +519,83 @@ function removeShowMeLabel() {
   if (el) el.remove();
 }
 
+// --- Confetti ---
+function fireConfetti() {
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+  const particles = [];
+  const colors = ['#e94560','#4ecca3','#f9d923','#6c5ce7','#fff'];
+  for (let i = 0; i < 120; i++) {
+    particles.push({
+      x: Math.random() * canvas.width, y: -10 - Math.random() * 200,
+      w: 4 + Math.random() * 6, h: 8 + Math.random() * 8,
+      vx: (Math.random() - 0.5) * 4, vy: 2 + Math.random() * 4,
+      rot: Math.random() * 360, vr: (Math.random() - 0.5) * 10,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      life: 1
+    });
+  }
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    particles.forEach(p => {
+      if (p.life <= 0) return;
+      alive = true;
+      p.x += p.vx; p.y += p.vy; p.vy += 0.1; p.rot += p.vr;
+      if (p.y > canvas.height + 20) p.life = 0;
+      if (frame > 60) p.life -= 0.01;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI / 180);
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    });
+    frame++;
+    if (alive) requestAnimationFrame(draw);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  draw();
+}
+
+// --- End game ---
+function endGame() {
+  clearInterval(timer);
+  document.getElementById('timerBar').style.display = 'none';
+  document.getElementById('regionHint').textContent = '';
+  document.getElementById('mapWrap').classList.remove('streak-glow');
+  gameState.active = false; gameState.currentTarget = null;
+  document.getElementById('hintBtn').style.display = 'none';
+  document.getElementById('skipBtn').style.display = 'none';
+  document.getElementById('settingsPanel').classList.remove('hidden');
+  document.getElementById('startBtn').textContent = 'Play Again';
+  const pct = Math.round((gameState.correct / gameState.totalInRound) * 100);
+  const screen = document.getElementById('completionScreen');
+  screen.classList.add('show');
+  document.getElementById('completionTitle').textContent = pct === 100 ? '🎉 Perfect Score!' : 'Quiz Complete!';
+  document.getElementById('finalScore').innerHTML =
+    '<strong>' + gameState.correct + '</strong> / <strong>' + gameState.totalInRound + '</strong> correct (' + pct + '%)<br>' +
+    'Best streak: <strong>' + gameState.bestStreak + '</strong> · Hints: <strong>' + gameState.hintsUsed + '</strong>' +
+    (gameState.missed.length > 0
+      ? '<br><br>Review: ' + gameState.missed.map(s => stateNames[s]).join(', ')
+      : '<br><br>🎉 No mistakes!');
+  if (gameState.missed.length > 0) document.getElementById('gameMode').value = 'missed';
+  if (pct === 100) fireConfetti();
+  saveStats(pct, gameState.bestStreak);
+  renderWeakStates();
+  updateProgress();
+}
+function closeCompletion() {
+  document.getElementById('completionScreen').classList.remove('show');
+}
+
+// --- Init ---
 initMap();
 renderStats();
+renderWeakStates();
 </script>
 </body>
 </html>
