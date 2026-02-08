@@ -6,65 +6,70 @@
 <title>US States Geography Quiz</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0b0e17;color:#eee;min-height:100vh;overflow-x:hidden}
-.top-bar{position:sticky;top:0;z-index:50;background:rgba(11,14,23,0.95);backdrop-filter:blur(10px);border-bottom:1px solid #1a2035;padding:8px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#2d3436;min-height:100vh;overflow-x:hidden}
+.top-bar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);border-bottom:1px solid #e0e4e8;padding:8px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .prompt-area{flex:1;min-width:0}
-.prompt-label{font-size:0.7rem;color:#556;text-transform:uppercase;letter-spacing:1px}
-.state-name{font-size:1.4rem;font-weight:800;color:#e94560;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.region-hint{font-size:0.7rem;color:#f9d923}
-.timer-bar{width:100%;height:4px;background:#1a2035;border-radius:2px;margin-top:2px;overflow:hidden}
-.timer-fill{height:100%;background:#e94560;border-radius:2px;transition:width 0.1s linear;width:100%}
+.prompt-label{font-size:0.7rem;color:#919bab;text-transform:uppercase;letter-spacing:1px}
+.state-name{font-size:1.4rem;font-weight:800;color:#e17055;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.region-hint{font-size:0.7rem;color:#6c5ce7;font-weight:600}
+.attempts-left{font-size:0.7rem;color:#919bab;margin-top:1px}
+.timer-bar{width:100%;height:4px;background:#e0e4e8;border-radius:2px;margin-top:2px;overflow:hidden}
+.timer-fill{height:100%;background:#e17055;border-radius:2px;transition:width 0.1s linear;width:100%}
 .score-pills{display:flex;gap:6px;flex-shrink:0}
-.pill{padding:4px 10px;border-radius:20px;font-size:0.8rem;font-weight:700;background:#111827}
-.pill-correct{color:#4ecca3;border:1px solid #4ecca322}
-.pill-wrong{color:#e94560;border:1px solid #e9456022}
-.pill-streak{color:#f9d923;border:1px solid #f9d92322}
-.settings-panel{background:#111827;padding:10px 16px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;border-bottom:1px solid #1a2035}
+.pill{padding:4px 10px;border-radius:20px;font-size:0.8rem;font-weight:700;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.08)}
+.pill-correct{color:#00b894;border:1px solid #00b89433}
+.pill-wrong{color:#e17055;border:1px solid #e1705533}
+.pill-streak{color:#fdcb6e;border:1px solid #fdcb6e33}
+.settings-panel{background:#fff;padding:10px 16px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;border-bottom:1px solid #e0e4e8}
 .settings-panel.hidden{display:none}
 .sel-group{display:flex;align-items:center;gap:6px}
-.sel-group label{font-size:0.75rem;color:#556}
-.sel-group select{padding:6px 10px;border-radius:6px;border:1px solid #1a2035;background:#0b0e17;color:#eee;font-size:0.85rem}
+.sel-group label{font-size:0.75rem;color:#919bab}
+.sel-group select{padding:6px 10px;border-radius:6px;border:1px solid #dfe6e9;background:#fff;color:#2d3436;font-size:0.85rem}
 .btn{padding:8px 18px;border:none;border-radius:8px;font-size:0.9rem;cursor:pointer;transition:all 0.15s;font-weight:700;min-height:40px;touch-action:manipulation}
-.btn-start{background:#e94560;color:white}
-.btn-start:hover{background:#c73652}
+.btn-start{background:#e17055;color:white}
+.btn-start:hover{background:#d35d48}
 .btn-learn{background:#6c5ce7;color:white}
-.btn-hint{background:#f9d923;color:#0b0e17}
-.btn-skip{background:#1a2035;color:#aaa;border:1px solid #2a3045}
+.btn-hint{background:#fdcb6e;color:#2d3436}
+.btn-skip{background:#dfe6e9;color:#636e72;border:1px solid #b2bec3}
 .btn-small{padding:6px 14px;font-size:0.8rem;min-height:34px}
+.game-actions{max-width:1100px;margin:0 auto;padding:6px 16px;display:flex;gap:8px;justify-content:center}
+.game-actions.hidden{display:none}
 .map-wrap{width:100%;max-width:1100px;margin:0 auto;padding:6px}
-.map-container{position:relative;background:#111827;border-radius:12px;overflow:hidden;border:1px solid #1a2035}
+.map-container{position:relative;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #dfe6e9;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
 #us-map{width:100%;height:auto;display:block;touch-action:manipulation}
-#us-map path{fill:#1a2844;stroke:#0b0e17;stroke-width:1;cursor:pointer;transition:fill 0.15s}
-#us-map path:hover{fill:#243b6a}
-#us-map path.correct-answer{fill:#4ecca3 !important}
-#us-map path.wrong-answer{fill:#e94560 !important}
-#us-map path.hint-highlight{fill:#f9d923 !important}
-#us-map path.completed{fill:#1a4a3a;opacity:0.7}
+#us-map path{fill:#b8d4e3;stroke:#fff;stroke-width:1;cursor:pointer;transition:fill 0.15s}
+#us-map path:hover{fill:#81b8d4}
+#us-map path.correct-answer{fill:#00b894 !important}
+#us-map path.wrong-answer{fill:#e17055 !important}
+#us-map path.hint-region{fill:#a29bfe !important;opacity:0.7}
+#us-map path.hint-neighbor{fill:#fdcb6e !important;opacity:0.8}
+#us-map path.hint-highlight{fill:#fd79a8 !important}
+#us-map path.completed{fill:#55efc4;opacity:0.5}
 #us-map path.learn-hover{fill:#6c5ce7 !important}
-.map-actions{position:absolute;bottom:12px;right:12px;display:flex;gap:8px;z-index:10}
 .toast{position:absolute;top:12px;left:50%;transform:translateX(-50%);padding:8px 20px;border-radius:20px;font-size:0.9rem;font-weight:700;z-index:10;pointer-events:none;opacity:0;transition:opacity 0.3s;white-space:nowrap}
 .toast.show{opacity:1}
-.toast-correct{background:#4ecca322;color:#4ecca3;border:1px solid #4ecca344}
-.toast-wrong{background:#e9456022;color:#e94560;border:1px solid #e9456044}
-.map-progress{position:absolute;bottom:0;left:0;right:0;height:4px;background:#1a2035;z-index:5}
-.map-progress-fill{height:100%;background:linear-gradient(90deg,#4ecca3,#6c5ce7);transition:width 0.4s;width:0%}
-.show-me-label{position:absolute;background:#4ecca3;color:#0b0e17;padding:3px 8px;border-radius:4px;font-size:0.75rem;font-weight:800;pointer-events:none;z-index:101;transform:translate(-50%,-100%);white-space:nowrap;animation:pulse 0.5s ease-in-out infinite alternate}
+.toast-correct{background:#00b89422;color:#00b894;border:1px solid #00b89444}
+.toast-wrong{background:#e1705522;color:#e17055;border:1px solid #e1705544}
+.toast-info{background:#6c5ce722;color:#6c5ce7;border:1px solid #6c5ce744}
+.map-progress{position:absolute;bottom:0;left:0;right:0;height:4px;background:#e0e4e8;z-index:5}
+.map-progress-fill{height:100%;background:linear-gradient(90deg,#00b894,#6c5ce7);transition:width 0.4s;width:0%}
+.show-me-label{position:absolute;background:#00b894;color:#fff;padding:3px 8px;border-radius:4px;font-size:0.75rem;font-weight:800;pointer-events:none;z-index:101;transform:translate(-50%,-100%);white-space:nowrap;animation:pulse 0.5s ease-in-out infinite alternate}
 @keyframes pulse{to{transform:translate(-50%,-100%) scale(1.1)}}
-.tooltip{position:absolute;background:rgba(0,0,0,0.9);color:#fff;padding:4px 10px;border-radius:4px;font-size:0.8rem;pointer-events:none;display:none;z-index:100}
-.bottom-bar{max-width:1100px;margin:0 auto;padding:8px 16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;font-size:0.75rem;color:#445}
-.bottom-bar strong{color:#4ecca3}
-.weak-states{color:#e94560;font-size:0.7rem;text-align:center;padding:0 16px 8px}
-.completion-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(11,14,23,0.92);backdrop-filter:blur(8px);justify-content:center;align-items:center}
+.tooltip{position:absolute;background:rgba(45,52,54,0.9);color:#fff;padding:4px 10px;border-radius:4px;font-size:0.8rem;pointer-events:none;display:none;z-index:100}
+.bottom-bar{max-width:1100px;margin:0 auto;padding:8px 16px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;font-size:0.75rem;color:#919bab}
+.bottom-bar strong{color:#00b894}
+.weak-states{color:#e17055;font-size:0.7rem;text-align:center;padding:0 16px 8px}
+.completion-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(45,52,54,0.6);backdrop-filter:blur(8px);justify-content:center;align-items:center}
 .completion-overlay.show{display:flex}
-.completion-card{background:#111827;border:1px solid #1a2035;border-radius:16px;padding:32px;text-align:center;max-width:400px;width:90%}
-.completion-card h2{font-size:1.8rem;color:#4ecca3;margin-bottom:12px}
-.completion-card .score-text{font-size:1rem;color:#889;margin-bottom:20px;line-height:1.7}
+.completion-card{background:#fff;border:1px solid #dfe6e9;border-radius:16px;padding:32px;text-align:center;max-width:400px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,0.12)}
+.completion-card h2{font-size:1.8rem;color:#00b894;margin-bottom:12px}
+.completion-card .score-text{font-size:1rem;color:#636e72;margin-bottom:20px;line-height:1.7}
 .completion-card .btn{width:100%;margin-top:8px}
 #confetti{position:fixed;inset:0;z-index:300;pointer-events:none}
-.streak-glow .map-container{box-shadow:0 0 30px #f9d92344,0 0 60px #f9d92322;transition:box-shadow 0.3s}
+.streak-glow .map-container{box-shadow:0 0 30px #fdcb6e44,0 0 60px #fdcb6e22;transition:box-shadow 0.3s}
 .learn-banner{background:#6c5ce7;color:white;text-align:center;padding:6px;font-size:0.8rem;font-weight:700;display:none}
 .learn-banner.show{display:block}
-@media(max-width:768px){.top-bar{padding:6px 10px;gap:8px}.state-name{font-size:1.2rem}.pill{padding:3px 8px;font-size:0.7rem}.settings-panel{padding:8px 10px;gap:8px}.sel-group select{padding:8px;font-size:0.9rem}.btn{min-height:44px}.map-wrap{padding:4px}}
+@media(max-width:768px){.top-bar{padding:6px 10px;gap:8px}.state-name{font-size:1.2rem}.pill{padding:3px 8px;font-size:0.7rem}.settings-panel{padding:8px 10px;gap:8px}.sel-group select{padding:8px;font-size:0.9rem}.btn{min-height:44px}.map-wrap{padding:4px}.game-actions{padding:4px 10px}}
 @media(max-width:480px){.score-pills{gap:4px}.pill{padding:2px 6px;font-size:0.65rem}.state-name{font-size:1.1rem}.sel-group{width:48%}.sel-group select{width:100%}.btn{width:100%}}
 </style>
 </head>
@@ -74,6 +79,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="prompt-label">Find this state</div>
     <div class="state-name" id="targetState">Choose a mode &amp; press Start</div>
     <div class="region-hint" id="regionHint"></div>
+    <div class="attempts-left" id="attemptsLeft"></div>
     <div class="timer-bar" id="timerBar" style="display:none"><div class="timer-fill" id="timerFill"></div></div>
   </div>
   <div class="score-pills">
@@ -102,12 +108,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="tooltip" id="tooltip"></div>
     <div class="toast" id="toast"></div>
     <svg id="us-map" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg"></svg>
-    <div class="map-actions">
-      <button class="btn btn-hint btn-small" id="hintBtn" onclick="giveHint()" style="display:none">💡 Hint</button>
-      <button class="btn btn-skip btn-small" id="skipBtn" onclick="skipState()" style="display:none">Skip →</button>
-    </div>
     <div class="map-progress"><div class="map-progress-fill" id="progressBar"></div></div>
   </div>
+</div>
+<div class="game-actions hidden" id="gameActions">
+  <button class="btn btn-hint btn-small" id="hintBtn" onclick="giveHint()">💡 Hint</button>
+  <button class="btn btn-skip btn-small" id="skipBtn" onclick="skipState()">Skip →</button>
 </div>
 <div class="bottom-bar" id="statsBar">
   <span>Games: <strong id="statGames">0</strong></span>
@@ -215,12 +221,20 @@ const regions = {
 let gameState = {
   active: false, queue: [], currentTarget: null,
   correct: 0, wrong: 0, streak: 0, bestStreak: 0,
-  completed: [], missed: [], totalInRound: 0, hintsUsed: 0
+  completed: [], missed: [], totalInRound: 0, hintsUsed: 0,
+  hintLevel: 0, attemptsLeft: 0
 };
 let difficulty = 'medium';
 let timer = null;
 let learnMode = false;
 let toastTimer = null;
+const maxAttempts = { easy: 3, medium: 2, hard: 1 };
+const neighborMap = {};
+function buildNeighborMap() {
+  const adj = {WA:['OR','ID'],OR:['WA','ID','NV','CA'],CA:['OR','NV','AZ'],NV:['OR','ID','UT','AZ','CA'],ID:['WA','OR','MT','WY','UT','NV'],MT:['ID','WY','ND','SD'],WY:['MT','ID','UT','CO','NE','SD'],CO:['WY','UT','NM','KS','NE'],UT:['ID','WY','CO','NV','AZ','NM'],AZ:['CA','NV','UT','NM'],NM:['AZ','UT','CO','TX','OK'],ND:['MT','SD','MN'],SD:['ND','MT','WY','NE','MN','IA'],NE:['SD','WY','CO','KS','MO','IA'],KS:['NE','CO','OK','MO'],MN:['ND','SD','IA','WI'],IA:['MN','SD','NE','MO','WI','IL'],MO:['IA','NE','KS','OK','AR','TN','KY','IL'],WI:['MN','IA','IL','MI'],IL:['WI','IA','MO','KY','IN'],IN:['IL','KY','OH','MI'],MI:['WI','IN','OH'],OH:['MI','IN','KY','WV','PA'],TX:['NM','OK','AR','LA'],OK:['CO','KS','MO','AR','TX','NM'],AR:['MO','OK','TX','LA','MS','TN'],LA:['TX','AR','MS'],MS:['AR','LA','TN','AL'],AL:['MS','TN','GA','FL'],TN:['KY','MO','AR','MS','AL','GA','NC','VA'],KY:['OH','IN','IL','MO','TN','VA','WV'],WV:['OH','KY','VA','PA','MD'],VA:['WV','KY','TN','NC','MD','DC'],NC:['VA','TN','GA','SC'],SC:['NC','GA'],GA:['TN','NC','SC','FL','AL'],FL:['GA','AL'],PA:['OH','WV','NY','NJ','DE','MD'],NY:['PA','NJ','CT','MA','VT'],NJ:['PA','NY','DE'],DE:['PA','NJ','MD'],MD:['PA','WV','VA','DE','DC'],DC:['MD','VA'],CT:['NY','MA','RI'],RI:['CT','MA'],MA:['NY','CT','RI','NH','VT'],VT:['NY','MA','NH'],NH:['VT','MA','ME'],ME:['NH'],AK:[],HI:[]};
+  for (const [s,ns] of Object.entries(adj)) neighborMap[s] = ns;
+}
+buildNeighborMap();
 
 // --- Toast feedback on map ---
 function showToast(msg, type) {
@@ -338,8 +352,7 @@ function enterLearnMode() {
   clearInterval(timer);
   document.getElementById('learnBanner').classList.add('show');
   document.getElementById('settingsPanel').classList.add('hidden');
-  document.getElementById('hintBtn').style.display = 'none';
-  document.getElementById('skipBtn').style.display = 'none';
+  document.getElementById('gameActions').classList.add('hidden');
   document.getElementById('targetState').textContent = 'Tap any state';
   document.getElementById('regionHint').textContent = '';
   document.getElementById('timerBar').style.display = 'none';
@@ -373,9 +386,12 @@ function startGame() {
   gameState = {
     active: true, queue: shuffle(list), currentTarget: null,
     correct: 0, wrong: 0, streak: 0, bestStreak: 0,
-    completed: [], missed: [], totalInRound: list.length, hintsUsed: 0
+    completed: [], missed: [], totalInRound: list.length, hintsUsed: 0,
+    hintLevel: 0, attemptsLeft: maxAttempts[difficulty]
   };
   updateScore();
+  const ga = document.getElementById('gameActions');
+  ga.classList.remove('hidden');
   document.getElementById('hintBtn').style.display = (difficulty === 'hard') ? 'none' : 'inline-block';
   document.getElementById('skipBtn').style.display = 'inline-block';
   document.getElementById('timerBar').style.display = (difficulty === 'hard') ? 'block' : 'none';
@@ -389,10 +405,13 @@ function nextState() {
   clearInterval(timer);
   if (gameState.queue.length === 0) { endGame(); return; }
   document.querySelectorAll('#us-map path').forEach(p => {
-    p.classList.remove('correct-answer','wrong-answer','hint-highlight');
+    p.classList.remove('correct-answer','wrong-answer','hint-highlight','hint-region','hint-neighbor');
   });
   gameState.currentTarget = gameState.queue.pop();
+  gameState.hintLevel = 0;
+  gameState.attemptsLeft = maxAttempts[difficulty];
   document.getElementById('targetState').textContent = stateNames[gameState.currentTarget];
+  updateAttemptsDisplay();
   const hint = document.getElementById('regionHint');
   if (difficulty === 'easy') {
     const r = stateRegions[gameState.currentTarget];
@@ -414,7 +433,7 @@ function nextState() {
         showMeLabel(gameState.currentTarget);
         showToast("Time's up! " + stateNames[gameState.currentTarget], 'wrong');
         updateScore(); updateStreakGlow();
-        setTimeout(() => { target.classList.remove('correct-answer'); target.classList.add('completed'); removeShowMeLabel(); gameState.completed.push(gameState.currentTarget); nextState(); }, 2500);
+        setTimeout(() => { target.classList.remove('correct-answer'); target.classList.add('completed'); removeShowMeLabel(); document.querySelectorAll('.hint-region,.hint-neighbor,.hint-highlight').forEach(p => p.classList.remove('hint-region','hint-neighbor','hint-highlight')); gameState.completed.push(gameState.currentTarget); nextState(); }, 2500);
       }
     }, 100);
   }
@@ -436,18 +455,24 @@ function handleStateClick(abbr) {
     updateStreakGlow();
     setTimeout(() => { clicked.classList.remove('correct-answer'); clicked.classList.add('completed'); nextState(); }, 700);
   } else {
+    gameState.attemptsLeft--;
+    clicked.classList.add('wrong-answer');
+    setTimeout(() => clicked.classList.remove('wrong-answer'), 800);
+    if (gameState.attemptsLeft > 0) {
+      showToast('✗ Not ' + stateNames[abbr] + ' — try again!', 'wrong');
+      updateAttemptsDisplay();
+      return;
+    }
     clearInterval(timer);
     gameState.wrong++; gameState.streak = 0;
     if (!gameState.missed.includes(gameState.currentTarget)) gameState.missed.push(gameState.currentTarget);
     recordAnswer(gameState.currentTarget, false);
-    clicked.classList.add('wrong-answer');
     target.classList.add('correct-answer');
     showToast(stateNames[abbr] + ' ✗ → ' + stateNames[gameState.currentTarget], 'wrong');
     showMeLabel(gameState.currentTarget);
     updateStreakGlow();
     const delay = (difficulty === 'easy') ? 3500 : 2500;
     setTimeout(() => {
-      clicked.classList.remove('wrong-answer');
       target.classList.remove('correct-answer');
       target.classList.add('completed');
       removeShowMeLabel();
@@ -457,13 +482,42 @@ function handleStateClick(abbr) {
   }
   updateScore();
 }
+function updateAttemptsDisplay() {
+  const el = document.getElementById('attemptsLeft');
+  if (maxAttempts[difficulty] <= 1) { el.textContent = ''; return; }
+  if (gameState.attemptsLeft === maxAttempts[difficulty]) { el.textContent = ''; return; }
+  el.textContent = gameState.attemptsLeft + ' attempt' + (gameState.attemptsLeft !== 1 ? 's' : '') + ' left';
+}
 
 function giveHint() {
   if (!gameState.active || !gameState.currentTarget) return;
+  gameState.hintLevel++;
   gameState.hintsUsed++;
-  const p = document.getElementById('state-' + gameState.currentTarget);
-  p.classList.add('hint-highlight');
-  setTimeout(() => p.classList.remove('hint-highlight'), 1500);
+  const abbr = gameState.currentTarget;
+  if (gameState.hintLevel === 1) {
+    const r = stateRegions[abbr];
+    document.getElementById('regionHint').textContent = r.charAt(0).toUpperCase() + r.slice(1) + ' region';
+    const regionStates = regions[r] || [];
+    regionStates.forEach(s => {
+      const el = document.getElementById('state-' + s);
+      if (el && !gameState.completed.includes(s)) el.classList.add('hint-region');
+    });
+    showToast('Hint: region highlighted', 'info');
+    setTimeout(() => document.querySelectorAll('.hint-region').forEach(p => p.classList.remove('hint-region')), 2500);
+  } else if (gameState.hintLevel === 2) {
+    const nb = neighborMap[abbr] || [];
+    nb.forEach(s => {
+      const el = document.getElementById('state-' + s);
+      if (el) el.classList.add('hint-neighbor');
+    });
+    showToast('Hint: neighbors highlighted', 'info');
+    setTimeout(() => document.querySelectorAll('.hint-neighbor').forEach(p => p.classList.remove('hint-neighbor')), 2500);
+  } else {
+    const p = document.getElementById('state-' + abbr);
+    p.classList.add('hint-highlight');
+    showToast('Hint: there it is!', 'info');
+    setTimeout(() => p.classList.remove('hint-highlight'), 2000);
+  }
 }
 
 function skipState() {
@@ -568,8 +622,8 @@ function endGame() {
   document.getElementById('regionHint').textContent = '';
   document.getElementById('mapWrap').classList.remove('streak-glow');
   gameState.active = false; gameState.currentTarget = null;
-  document.getElementById('hintBtn').style.display = 'none';
-  document.getElementById('skipBtn').style.display = 'none';
+  document.getElementById('gameActions').classList.add('hidden');
+  document.getElementById('attemptsLeft').textContent = '';
   document.getElementById('settingsPanel').classList.remove('hidden');
   document.getElementById('startBtn').textContent = 'Play Again';
   const pct = Math.round((gameState.correct / gameState.totalInRound) * 100);
