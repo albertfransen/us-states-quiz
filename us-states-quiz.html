@@ -433,7 +433,7 @@ function nextState() {
         showMeLabel(gameState.currentTarget);
         showToast("Time's up! " + stateNames[gameState.currentTarget], 'wrong');
         updateScore(); updateStreakGlow();
-        setTimeout(() => { target.classList.remove('correct-answer'); target.classList.add('completed'); removeShowMeLabel(); document.querySelectorAll('.hint-region,.hint-neighbor,.hint-highlight').forEach(p => p.classList.remove('hint-region','hint-neighbor','hint-highlight')); gameState.completed.push(gameState.currentTarget); nextState(); }, 2500);
+        setTimeout(() => { target.classList.remove('correct-answer'); if (difficulty !== 'hard') target.classList.add('completed'); removeShowMeLabel(); document.querySelectorAll('.hint-region,.hint-neighbor,.hint-highlight').forEach(p => p.classList.remove('hint-region','hint-neighbor','hint-highlight')); gameState.completed.push(gameState.currentTarget); nextState(); }, 2500);
       }
     }, 100);
   }
@@ -453,7 +453,7 @@ function handleStateClick(abbr) {
     clicked.classList.add('correct-answer');
     showToast('✓ ' + stateNames[abbr], 'correct');
     updateStreakGlow();
-    setTimeout(() => { clicked.classList.remove('correct-answer'); clicked.classList.add('completed'); nextState(); }, 700);
+    setTimeout(() => { clicked.classList.remove('correct-answer'); if (difficulty !== 'hard') clicked.classList.add('completed'); nextState(); }, 700);
   } else {
     gameState.attemptsLeft--;
     clicked.classList.add('wrong-answer');
@@ -474,7 +474,7 @@ function handleStateClick(abbr) {
     const delay = (difficulty === 'easy') ? 3500 : 2500;
     setTimeout(() => {
       target.classList.remove('correct-answer');
-      target.classList.add('completed');
+      if (difficulty !== 'hard') target.classList.add('completed');
       removeShowMeLabel();
       gameState.completed.push(gameState.currentTarget);
       nextState();
@@ -532,7 +532,7 @@ function skipState() {
   p.classList.add('hint-highlight');
   showMeLabel(gameState.currentTarget);
   updateStreakGlow();
-  setTimeout(() => { p.classList.remove('hint-highlight'); p.classList.add('completed'); removeShowMeLabel(); nextState(); }, 1200);
+  setTimeout(() => { p.classList.remove('hint-highlight'); if (difficulty !== 'hard') p.classList.add('completed'); removeShowMeLabel(); nextState(); }, 1200);
   updateScore();
 }
 
